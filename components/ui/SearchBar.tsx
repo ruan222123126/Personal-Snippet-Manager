@@ -30,8 +30,8 @@ export function SearchBar() {
         type="text"
         defaultValue={searchParams.get('q') || ''}
         onChange={(e) => handleSearch(e.target.value)}
-        placeholder="搜索代码片段..."
-        className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg leading-5 bg-white dark:bg-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors"
+        placeholder="搜索代码片段 (支持中英文)..."
+        className="block w-full pl-10 pr-4 py-2.5 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 hover:border-gray-300 dark:hover:border-gray-600"
       />
     </div>
   );

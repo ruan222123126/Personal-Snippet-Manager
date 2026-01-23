@@ -136,9 +136,9 @@ Personal Snippet Manager - 一个代码片段管理应用，使用 Next.js 15、
 
 ### 开发
 ```bash
-npm run dev          # 启动 Next.js 开发服务器
+npm run dev          # 启动 Next.js 开发服务器（端口 3001）
 npm run build        # 构建生产版本
-npm run start        # 启动生产服务器
+npm run start        # 启动生产服务器（端口 3001）
 npm run lint         # 运行 ESLint
 ```
 
@@ -174,6 +174,11 @@ npx tsc --noEmit    # 类型检查而不生成文件
   - `snippet_au` - UPDATE 同步
   - `snippet_ad` - DELETE 同步
 
+**事务模式**：
+- 创建带标签的 Snippet 时使用 `$transaction` 确保原子性
+- 在事务中先 upsert 所有标签，然后创建 Snippet，最后创建关联记录
+- 参考 `app/api/snippets/route.ts:59` 的 POST 实现
+
 **重要**：修改 schema 时，需要手动编辑 `prisma/migrations/XXXX/migration.sql` 中的迁移 SQL 文件以包含 FTS5 表和触发器，然后运行 `npx prisma migrate deploy`。
 
 ### 单例模式
@@ -182,6 +187,7 @@ Prisma Client 和 Shiki Highlighter 都使用单例模式，防止开发环境�
 
 - `lib/prisma.ts` - Prisma Client 单例，导入方式：`import { prisma } from '@/lib/prisma'`
 - `lib/shiki.ts` - Shiki Highlighter 单例，使用方式：`await getShikiHighlighter()`
+- `lib/data.ts` - 数据访问层，封装 `getSnippets()` 函数，支持 FTS5 搜索和标签过滤
 
 ### 路径别名
 
@@ -190,6 +196,22 @@ Prisma Client 和 Shiki Highlighter 都使用单例模式，防止开发环境�
 import { prisma } from '@/lib/prisma';
 import { getShikiHighlighter } from '@/lib/shiki';
 ```
+
+### API 设计模式
+
+- API 路由使用 Next.js App Router 格式：`app/api/[资源]/route.ts`
+- 每个路由文件导出命名的 HTTP 方法函数（GET、POST 等）
+- 使用 JSDoc 注释记录查询参数和请求体格式
+- 统一错误处理和响应格式（参考 `app/api/snippets/route.ts`）
+
+### 组件架构
+
+- 默认使用 Server Components（无需 `'use client'` 指令）
+- 仅在需要交互性（useState、useEffect、事件处理程序）时使用 Client Components
+- UI 组件放在 `components/ui/` 目录下
+- 代码高亮使用 `highlightCode()` 函数，支持明暗主题切换
+- Shiki 预加载语言：javascript、typescript、python、java、cpp、c、go、rust、html、css、json、bash、sql、markdown、text
+- 添加新语言支持需要修改 `lib/shiki.ts:14` 中的 `langs` 数组
 
 ## 项目结构
 
@@ -213,10 +235,12 @@ prisma/
 
 ## 核心技术
 
-- **Next.js 15** - App Router（React Server Components）
+- **Next.js 16** - App Router（React Server Components），开发服务器运行在端口 3001
+- **React 19** - UI 库
 - **Prisma 6** - SQLite ORM
 - **Shiki** - 语法高亮（使用 TextMate grammars）
 - **Tailwind CSS 4** - 实用优先的 CSS 框架
+- **Heroicons** - 图标库
 
 ## 数据库连接
 
@@ -234,6 +258,7 @@ Prisma 使用 SQLite，连接 URL 来自 `DATABASE_URL` 环境变量（在 `.env
 |-------------|---------|
 | `lib/prisma.ts` | 导入 Prisma Client - 永远不要创建新实例 |
 | `lib/shiki.ts` | 语法高亮器单例 |
+| `lib/data.ts` | 数据访问层 - 获取代码片段列表 |
 | `prisma/schema.prisma` | 数据库 schema 定义 |
 | `app/api/` | Next.js API 路由 |
 | `components/ui/` | 可复用的 UI 组件 |

@@ -1,4 +1,11 @@
 import { prisma } from '@/lib/prisma';
+import { Snippet, Tag, TagOnSnippet } from '@prisma/client';
+
+export type { Tag };
+
+export type SnippetWithTags = Snippet & {
+  tags: (TagOnSnippet & { tag: Tag })[];
+};
 
 /**
  * 获取代码片段列表
@@ -12,7 +19,7 @@ import { prisma } from '@/lib/prisma';
  * @param tag - 标签名称过滤
  * @returns 包含关联标签的代码片段列表
  */
-export async function getSnippets(query?: string, tag?: string) {
+export async function getSnippets(query?: string, tag?: string): Promise<SnippetWithTags[]> {
   if (query) {
     // 1. FTS5 全文搜索
     const rawIds = await prisma.$queryRaw<{ id: string }[]>`
