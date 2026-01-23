@@ -1,0 +1,211 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { TagInput } from '@/components/ui/TagInput';
+
+const LANGUAGES = [
+  { value: 'javascript', label: 'JavaScript' },
+  { value: 'typescript', label: 'TypeScript' },
+  { value: 'python', label: 'Python' },
+  { value: 'rust', label: 'Rust' },
+  { value: 'go', label: 'Go' },
+  { value: 'java', label: 'Java' },
+  { value: 'c', label: 'C' },
+  { value: 'cpp', label: 'C++' },
+  { value: 'csharp', label: 'C#' },
+  { value: 'php', label: 'PHP' },
+  { value: 'ruby', label: 'Ruby' },
+  { value: 'swift', label: 'Swift' },
+  { value: 'kotlin', label: 'Kotlin' },
+  { value: 'html', label: 'HTML' },
+  { value: 'css', label: 'CSS' },
+  { value: 'sql', label: 'SQL' },
+  { value: 'bash', label: 'Bash' },
+  { value: 'json', label: 'JSON' },
+  { value: 'yaml', label: 'YAML' },
+  { value: 'markdown', label: 'Markdown' },
+];
+
+export default function CreateSnippetPage() {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    title: '',
+    code: '',
+    language: 'javascript',
+    description: '',
+  });
+  const [tags, setTags] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const res = await fetch('/api/snippets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, tags }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to create snippet');
+      }
+
+      router.refresh();
+      router.push('/');
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : 'Something went wrong');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = e.currentTarget.selectionStart;
+      const end = e.currentTarget.selectionEnd;
+      const newValue =
+        formData.code.substring(0, start) + '  ' + formData.code.substring(end);
+      setFormData({ ...formData, code: newValue });
+      // Set cursor position after the inserted tabs
+      setTimeout(() => {
+        e.currentTarget.selectionStart = e.currentTarget.selectionEnd = start + 2;
+      }, 0);
+    }
+  };
+
+  return (
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header */}
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              新建代码片段
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              创建并保存您的代码片段
+            </p>
+          </div>
+          <Link
+            href="/"
+            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
+          >
+            返回首页
+          </Link>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          {error && (
+            <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            </div>
+          )}
+
+          {/* Title */}
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              标题 <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="title"
+              required
+              className="w-full p-2 border rounded-md dark:bg-gray-900 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none"
+              value={formData.title}
+              onChange={e => setFormData({ ...formData, title: e.target.value })}
+              placeholder="输入代码片段标题"
+            />
+          </div>
+
+          {/* Language & Tags Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="language" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                编程语言 <span className="text-red-500">*</span>
+              </label>
+              <select
+                id="language"
+                className="w-full p-2 border rounded-md dark:bg-gray-900 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none"
+                value={formData.language}
+                onChange={e => setFormData({ ...formData, language: e.target.value })}
+              >
+                {LANGUAGES.map(lang => (
+                  <option key={lang.value} value={lang.value}>
+                    {lang.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="tags" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                标签
+              </label>
+              <TagInput tags={tags} setTags={setTags} />
+            </div>
+          </div>
+
+          {/* Description */}
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              描述
+            </label>
+            <textarea
+              id="description"
+              rows={3}
+              className="w-full p-2 border rounded-md dark:bg-gray-900 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+              value={formData.description}
+              onChange={e => setFormData({ ...formData, description: e.target.value })}
+              placeholder="输入代码片段描述（可选）"
+            />
+          </div>
+
+          {/* Code */}
+          <div>
+            <label htmlFor="code" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              代码 <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              id="code"
+              required
+              rows={12}
+              className="w-full p-3 border rounded-md font-mono text-sm dark:bg-gray-900 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none resize-y"
+              value={formData.code}
+              onChange={e => setFormData({ ...formData, code: e.target.value })}
+              onKeyDown={handleKeyDown}
+              placeholder="粘贴或输入代码..."
+            />
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              提示：使用 Tab 键缩进
+            </p>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex gap-3">
+            <button
+              disabled={isSubmitting}
+              type="submit"
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {isSubmitting ? '保存中...' : '创建片段'}
+            </button>
+            <Link
+              href="/"
+              className="px-6 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition-colors"
+            >
+              取消
+            </Link>
+          </div>
+        </form>
+      </div>
+    </main>
+  );
+}
