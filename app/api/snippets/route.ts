@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { getSnippets } from '@/lib/data';
 import { prisma } from '@/lib/prisma';
 
 /**
@@ -11,50 +12,11 @@ import { prisma } from '@/lib/prisma';
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const q = searchParams.get('q');
-  const tag = searchParams.get('tag');
+  const q = searchParams.get('q') || undefined;
+  const tag = searchParams.get('tag') || undefined;
 
   try {
-    let snippets: any[] = [];
-
-    if (q) {
-      // 1. FTS full-text search using SQLite FTS5
-      // Note: SnippetFTS uses rowid (INTEGER), need to join with Snippet
-      const results = await prisma.$queryRaw<
-        { id: string }[]
-      >`
-        SELECT s.id FROM Snippet s
-        INNER JOIN SnippetFTS fts ON s.rowid = fts.rowid
-        WHERE SnippetFTS MATCH ${q}
-        ORDER BY rank;
-      `;
-
-      const ids = results.map((row) => row.id);
-
-      if (ids.length > 0) {
-        snippets = await prisma.snippet.findMany({
-          where: { id: { in: ids } },
-          include: { tags: { include: { tag: true } } },
-        });
-      }
-    } else if (tag) {
-      // 2. Filter by tag name
-      snippets = await prisma.snippet.findMany({
-        where: {
-          tags: { some: { tag: { name: tag } } },
-        },
-        orderBy: { createdAt: 'desc' },
-        include: { tags: { include: { tag: true } } },
-      });
-    } else {
-      // 3. Default: return latest snippets
-      snippets = await prisma.snippet.findMany({
-        take: 20,
-        orderBy: { createdAt: 'desc' },
-        include: { tags: { include: { tag: true } } },
-      });
-    }
-
+    const snippets = await getSnippets(q, tag);
     return NextResponse.json(snippets);
   } catch (error) {
     console.error('Error fetching snippets:', error);
