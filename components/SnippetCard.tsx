@@ -1,8 +1,12 @@
+'use client';
+
 import Link from 'next/link';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { SnippetActions } from '@/components/SnippetActions';
+import { TutorialView } from '@/components/ui/TutorialView';
 import { type SnippetWithTags, type Tag } from '@/lib/data';
 import { highlightKeywords, extractKeywords } from '@/lib/highlight';
+import { useState } from 'react';
 
 interface SnippetCardProps {
   snippet: SnippetWithTags;
@@ -18,12 +22,14 @@ interface SnippetCardProps {
  * - 代码预览（带语法高亮）
  * - 标签列表
  * - 创建时间
- * - 操作按钮（编辑、删除）
+ * - 操作按钮（编辑、删除、教学说明）
  * - 搜索关键词高亮（当提供 query 时）
  *
  * 点击卡片可跳转到详情页
  */
 export function SnippetCard({ snippet, query }: SnippetCardProps) {
+  const [showTutorial, setShowTutorial] = useState(false);
+
   // 提取搜索关键词用于高亮
   const keywords = query ? extractKeywords(query) : [];
 
@@ -87,6 +93,40 @@ export function SnippetCard({ snippet, query }: SnippetCardProps) {
             </span>
           ))}
         </div>
+      )}
+
+      {/* Tutorial Button */}
+      {snippet.tutorial && (
+        <div className="px-4 pb-4 relative z-10">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowTutorial(true);
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              />
+            </svg>
+            教学说明
+          </button>
+        </div>
+      )}
+
+      {/* Tutorial Modal */}
+      {showTutorial && snippet.tutorial && (
+        <TutorialView
+          tutorial={snippet.tutorial}
+          language={snippet.language}
+          onClose={() => setShowTutorial(false)}
+        />
       )}
     </div>
   );

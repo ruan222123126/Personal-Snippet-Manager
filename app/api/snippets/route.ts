@@ -63,6 +63,7 @@ export async function GET(request: Request) {
  *   code: string;
  *   language: string;
  *   description?: string;
+ *   tutorial?: string;
  *   tags: string[];
  * }
  *
@@ -70,7 +71,7 @@ export async function GET(request: Request) {
  */
 export async function POST(request: Request) {
   try {
-    const { title, code, language, description, tags } = await request.json();
+    const { title, code, language, description, tutorial, tags } = await request.json();
 
     // Validate required fields
     if (!title || !code || !language) {
@@ -105,6 +106,9 @@ export async function POST(request: Request) {
       };
       if (description !== undefined) {
         snippetData.description = description;
+      }
+      if (tutorial !== undefined) {
+        snippetData.tutorial = tutorial;
       }
 
       // Then create the snippet

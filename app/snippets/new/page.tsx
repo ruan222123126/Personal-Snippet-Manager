@@ -4,6 +4,9 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { TagInput } from '@/components/ui/TagInput';
+import { TutorialEditor } from '@/components/ui/TutorialEditor';
+import { Icon } from '@iconify/react';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 const LANGUAGES = [
   { value: 'javascript', label: 'JavaScript' },
@@ -36,6 +39,7 @@ export default function CreateSnippetPage() {
     code: '',
     language: 'javascript',
     description: '',
+    tutorial: '',
   });
   const [tags, setTags] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -91,18 +95,24 @@ export default function CreateSnippetPage() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              新建代码片段
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              创建并保存您的代码片段
-            </p>
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
+              <Icon icon="lucide:plus-circle" className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                新建代码片段
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400">
+                创建并保存您的代码片段
+              </p>
+            </div>
           </div>
           <Link
             href="/"
-            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
+            <ArrowLeftIcon className="w-4 h-4" />
             返回首页
           </Link>
         </div>
@@ -117,7 +127,8 @@ export default function CreateSnippetPage() {
 
           {/* Title */}
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="title" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <Icon icon="lucide:heading" className="w-4 h-4" />
               标题 <span className="text-red-500">*</span>
             </label>
             <input
@@ -133,7 +144,8 @@ export default function CreateSnippetPage() {
           {/* Language & Tags Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="language" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="language" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <Icon icon="lucide:code-2" className="w-4 h-4" />
                 编程语言 <span className="text-red-500">*</span>
               </label>
               <select
@@ -150,7 +162,8 @@ export default function CreateSnippetPage() {
               </select>
             </div>
             <div>
-              <label htmlFor="tags" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="tags" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <Icon icon="lucide:tag" className="w-4 h-4" />
                 标签
               </label>
               <TagInput tags={tags} setTags={setTags} />
@@ -159,7 +172,8 @@ export default function CreateSnippetPage() {
 
           {/* Description */}
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="description" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <Icon icon="lucide:align-left" className="w-4 h-4" />
               描述
             </label>
             <textarea
@@ -174,7 +188,8 @@ export default function CreateSnippetPage() {
 
           {/* Code */}
           <div>
-            <label htmlFor="code" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="code" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <Icon icon="lucide:file-code" className="w-4 h-4" />
               代码 <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -193,19 +208,28 @@ export default function CreateSnippetPage() {
             </p>
           </div>
 
+          {/* Tutorial */}
+          <TutorialEditor
+            value={formData.tutorial}
+            onChange={(value) => setFormData({ ...formData, tutorial: value })}
+            placeholder="使用 Markdown 编写教学说明，帮助理解代码的使用方法、原理和实践..."
+          />
+
           {/* Submit Button */}
           <div className="flex gap-3">
             <button
               disabled={isSubmitting}
               type="submit"
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="inline-flex items-center justify-center gap-2 flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
+              <Icon icon="lucide:save" className="w-4 h-4" />
               {isSubmitting ? '保存中...' : '创建片段'}
             </button>
             <Link
               href="/"
-              className="px-6 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition-colors"
             >
+              <Icon icon="lucide:x" className="w-4 h-4" />
               取消
             </Link>
           </div>

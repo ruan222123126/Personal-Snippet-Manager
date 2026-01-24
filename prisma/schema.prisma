@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,15 +8,15 @@ datasource db {
 }
 
 model Snippet {
-  id          String   @id @default(cuid())
+  id          String         @id @default(cuid())
   title       String
   description String?
   code        String
   language    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  tags         TagOnSnippet[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  tutorial    String?
+  tags        TagOnSnippet[]
 }
 
 model Tag {
@@ -27,8 +24,7 @@ model Tag {
   name      String         @unique
   color     String?
   createdAt DateTime       @default(now())
-
-  snippets TagOnSnippet[]
+  snippets  TagOnSnippet[]
 }
 
 model TagOnSnippet {
@@ -36,9 +32,8 @@ model TagOnSnippet {
   snippetId  String
   tagId      String
   assignedAt DateTime @default(now())
-
-  snippet Snippet @relation(fields: [snippetId], references: [id], onDelete: Cascade)
-  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  snippet    Snippet  @relation(fields: [snippetId], references: [id], onDelete: Cascade)
 
   @@unique([snippetId, tagId])
 }
@@ -50,15 +45,54 @@ model SearchHistory {
   resultCount Int
   createdAt   DateTime @default(now())
 
-  @@index([createdAt])
-  @@index([query])
+  @@index([query], map: "SearchHistory.query_idx")
+  @@index([createdAt], map: "SearchHistory.createdAt_idx")
 }
 
 model SearchStats {
-  id            String   @id @default(cuid())
-  query         String   @unique
-  searchCount   Int      @default(0)
+  id             String   @id @default(cuid())
+  query          String   @unique(map: "SearchStats.query_key")
+  searchCount    Int      @default(0)
   lastSearchedAt DateTime @default(now())
 
-  @@index([searchCount])
+  @@index([searchCount], map: "SearchStats.searchCount_idx")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model SnippetFTS {
+  title       Unsupported("")?
+  description Unsupported("")?
+  code        Unsupported("")?
+  language    Unsupported("")?
+  tutorial    Unsupported("")?
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model SnippetFTS_config {
+  k Unsupported("")  @id
+  v Unsupported("")?
+
+  @@ignore
+}
+
+model SnippetFTS_data {
+  id    Int    @id @default(autoincrement())
+  block Bytes?
+}
+
+model SnippetFTS_docsize {
+  id Int    @id @default(autoincrement())
+  sz Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model SnippetFTS_idx {
+  segid Unsupported("")
+  term  Unsupported("")
+  pgno  Unsupported("")?
+
+  @@id([segid, term])
+  @@ignore
 }

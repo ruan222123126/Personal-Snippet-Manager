@@ -5,6 +5,7 @@ import { AdvancedSearchPanel } from "@/components/AdvancedSearchPanel";
 import { FilterChips } from "@/components/FilterChips";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { Icon } from "@iconify/react";
 
 interface PageProps {
   searchParams: Promise<{
@@ -81,18 +82,31 @@ export default async function Home({ searchParams }: PageProps) {
 
         {/* Snippets Grid */}
         {snippets.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 dark:text-gray-400 text-lg mb-4">
-              {q || tag ? "未找到匹配的代码片段" : "暂无代码片段"}
-            </p>
-            {!q && !tag && (
-              <Link
-                href="/snippets/new"
-                className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-200"
-              >
-                <PlusIcon className="w-5 h-5" />
-                创建第一个代码片段
-              </Link>
+          <div className="text-center py-16">
+            {q || tag ? (
+              <>
+                <Icon icon="lucide:search-x" className="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4" />
+                <p className="text-gray-500 dark:text-gray-400 text-lg mb-2">
+                  未找到匹配的代码片段
+                </p>
+                <p className="text-gray-400 dark:text-gray-500 text-sm">
+                  试试调整搜索关键词或筛选条件
+                </p>
+              </>
+            ) : (
+              <>
+                <Icon icon="lucide:inbox" className="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4" />
+                <p className="text-gray-500 dark:text-gray-400 text-lg mb-4">
+                  暂无代码片段
+                </p>
+                <Link
+                  href="/snippets/new"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-200"
+                >
+                  <PlusIcon className="w-5 h-5" />
+                  创建第一个代码片段
+                </Link>
+              </>
             )}
           </div>
         ) : (

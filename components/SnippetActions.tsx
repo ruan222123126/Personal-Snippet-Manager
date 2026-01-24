@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { deleteSnippet } from '@/app/actions';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { createPortal } from 'react-dom';
 
 interface SnippetActionsProps {
   snippetId: string;
@@ -21,7 +22,13 @@ export function SnippetActions({ snippetId }: SnippetActionsProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
+
+  // 确保组件已挂载，才能使用 Portal
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -83,13 +90,13 @@ export function SnippetActions({ snippetId }: SnippetActionsProps) {
       </div>
 
       {/* 删除确认对话框 */}
-      {showDeleteConfirm && (
+      {showDeleteConfirm && mounted && createPortal(
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4"
           onClick={handleCancelDelete}
         >
           <div
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-6"
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
@@ -116,7 +123,8 @@ export function SnippetActions({ snippetId }: SnippetActionsProps) {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

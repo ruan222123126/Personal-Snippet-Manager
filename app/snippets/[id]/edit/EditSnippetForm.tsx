@@ -4,6 +4,7 @@ import { useState, useRef, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { TagInput } from '@/components/ui/TagInput';
+import { TutorialEditor } from '@/components/ui/TutorialEditor';
 import type { Snippet } from '@prisma/client';
 
 const LANGUAGES = [
@@ -42,6 +43,7 @@ export default function EditSnippetForm({ snippet, tags: initialTags }: EditSnip
     code: snippet.code,
     language: snippet.language,
     description: snippet.description || '',
+    tutorial: snippet.tutorial || '',
   });
   const [tags, setTags] = useState<string[]>(initialTags);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -198,6 +200,13 @@ export default function EditSnippetForm({ snippet, tags: initialTags }: EditSnip
               提示：使用 Tab 键缩进
             </p>
           </div>
+
+          {/* Tutorial */}
+          <TutorialEditor
+            value={formData.tutorial}
+            onChange={(value) => setFormData({ ...formData, tutorial: value })}
+            placeholder="使用 Markdown 编写教学说明，帮助理解代码的使用方法、原理和实践..."
+          />
 
           {/* Submit Button */}
           <div className="flex gap-3">

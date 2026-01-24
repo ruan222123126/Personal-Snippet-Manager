@@ -47,6 +47,7 @@ export async function GET(request: Request, { params }: RouteParams) {
  *   code: string;
  *   language: string;
  *   description?: string;
+ *   tutorial?: string;
  *   tags: string[];
  * }
  */
@@ -55,7 +56,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
 
   try {
     const body = await request.json();
-    const { title, code, language, description, tags } = body;
+    const { title, code, language, description, tutorial, tags } = body;
 
     // Validate required fields
     if (!title || !code || !language) {
@@ -99,6 +100,9 @@ export async function PUT(request: Request, { params }: RouteParams) {
       };
       if (description !== undefined) {
         snippetData.description = description;
+      }
+      if (tutorial !== undefined) {
+        snippetData.tutorial = tutorial;
       }
 
       // 更新代码片段

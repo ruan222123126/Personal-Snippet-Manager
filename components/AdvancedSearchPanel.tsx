@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import { Icon } from '@iconify/react';
 
 interface Metadata {
   languages: string[];
@@ -99,6 +100,7 @@ export function AdvancedSearchPanel({ metadata }: AdvancedSearchPanelProps) {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-200 text-gray-700 dark:text-gray-300"
       >
+        <Icon icon="lucide:sliders-horizontal" className="w-5 h-5" />
         <span>高级筛选</span>
         {isOpen ? (
           <ChevronUpIcon className="w-5 h-5" />
@@ -112,7 +114,8 @@ export function AdvancedSearchPanel({ metadata }: AdvancedSearchPanelProps) {
         <div className="mt-4 p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm space-y-6">
           {/* 语言筛选 */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
+              <Icon icon="lucide:code-2" className="w-4 h-4" />
               编程语言
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -135,7 +138,8 @@ export function AdvancedSearchPanel({ metadata }: AdvancedSearchPanelProps) {
           {/* 标签筛选 */}
           {metadata.tags.length > 0 && (
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
+                <Icon icon="lucide:tag" className="w-4 h-4" />
                 标签
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -158,7 +162,8 @@ export function AdvancedSearchPanel({ metadata }: AdvancedSearchPanelProps) {
 
           {/* 时间范围筛选 */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
+              <Icon icon="lucide:calendar" className="w-4 h-4" />
               时间范围
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -186,7 +191,8 @@ export function AdvancedSearchPanel({ metadata }: AdvancedSearchPanelProps) {
 
           {/* 排序选项 */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
+              <Icon icon="lucide:arrow-up-down" className="w-4 h-4" />
               排序方式
             </h3>
             <div className="flex flex-wrap gap-4">
@@ -214,8 +220,9 @@ export function AdvancedSearchPanel({ metadata }: AdvancedSearchPanelProps) {
           <div className="flex items-center gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button
               onClick={applyFilters}
-              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-200"
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-200"
             >
+              <Icon icon="lucide:check" className="w-4 h-4" />
               应用筛选
             </button>
             <button
@@ -226,8 +233,9 @@ export function AdvancedSearchPanel({ metadata }: AdvancedSearchPanelProps) {
                 setSortBy('createdAt');
                 setSortOrder('desc');
               }}
-              className="px-6 py-2.5 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-medium transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-medium transition-colors"
             >
+              <Icon icon="lucide:rotate-ccw" className="w-4 h-4" />
               重置
             </button>
           </div>

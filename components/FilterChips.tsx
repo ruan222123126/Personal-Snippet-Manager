@@ -2,6 +2,7 @@
 
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Icon } from '@iconify/react';
 
 interface FilterChipsProps {
   languages?: string[];
@@ -93,10 +94,11 @@ export function FilterChips({
         <button
           key={lang}
           onClick={() => removeFilter('languages', lang)}
-          className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
         >
+          <Icon icon="lucide:code-2" className="w-3.5 h-3.5" />
           <span>{lang}</span>
-          <XMarkIcon className="w-4 h-4" />
+          <XMarkIcon className="w-3.5 h-3.5 ml-0.5" />
         </button>
       ))}
 
@@ -105,10 +107,11 @@ export function FilterChips({
         <button
           key={tag}
           onClick={() => removeFilter('tags', tag)}
-          className="inline-flex items-center gap-1 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-sm font-medium hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-sm font-medium hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors"
         >
+          <Icon icon="lucide:tag" className="w-3.5 h-3.5" />
           <span>{tag}</span>
-          <XMarkIcon className="w-4 h-4" />
+          <XMarkIcon className="w-3.5 h-3.5 ml-0.5" />
         </button>
       ))}
 
@@ -116,10 +119,11 @@ export function FilterChips({
       {dateRange && (
         <button
           onClick={() => removeFilter('dateRange')}
-          className="inline-flex items-center gap-1 px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm font-medium hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm font-medium hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors"
         >
+          <Icon icon="lucide:calendar" className="w-3.5 h-3.5" />
           <span>{dateRangeLabels[dateRange]}</span>
-          <XMarkIcon className="w-4 h-4" />
+          <XMarkIcon className="w-3.5 h-3.5 ml-0.5" />
         </button>
       )}
 
@@ -130,21 +134,23 @@ export function FilterChips({
             if (sortBy) removeFilter('sortBy');
             if (sortOrder) removeFilter('sortOrder');
           }}
-          className="inline-flex items-center gap-1 px-3 py-1.5 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full text-sm font-medium hover:bg-orange-200 dark:hover:bg-orange-900/50 transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full text-sm font-medium hover:bg-orange-200 dark:hover:bg-orange-900/50 transition-colors"
         >
+          <Icon icon="lucide:arrow-up-down" className="w-3.5 h-3.5" />
           <span>
             {sortBy && sortByLabels[sortBy]}
             {sortOrder && ` · ${sortOrderLabels[sortOrder]}`}
           </span>
-          <XMarkIcon className="w-4 h-4" />
+          <XMarkIcon className="w-3.5 h-3.5 ml-0.5" />
         </button>
       )}
 
       {/* 清除所有按钮 */}
       <button
         onClick={clearAllFilters}
-        className="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors ml-2"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors ml-2"
       >
+        <Icon icon="lucide:trash-2" className="w-3.5 h-3.5" />
         <span>清除全部</span>
       </button>
     </div>
