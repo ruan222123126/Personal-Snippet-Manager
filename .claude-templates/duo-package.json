@@ -1,0 +1,15 @@
+{
+  "name": "claude-duo-system",
+  "version": "1.0.0",
+  "description": "双 Claude 协作系统 - 模板配置",
+  "scripts": {
+    "duo": "bash ./.claude-duo/start-monitoring.sh",
+    "duo:install": "sudo apt-get install -y inotify-tools jq",
+    "duo:clean": "rm -rf ./.claude-duo/queue/*.json",
+    "duo:watch": "bash ./.claude-duo/file-monitor.sh",
+    "duo:review": "node ./.claude-duo/review-mode.js"
+  },
+  "keywords": ["claude", "code-review", "collaboration"],
+  "author": "",
+  "license": "MIT"
+}

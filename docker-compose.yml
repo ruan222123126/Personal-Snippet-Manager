@@ -1,0 +1,14 @@
+services:
+  snippet-manager:
+    container_name: snippet-manager
+    build: .
+    restart: always
+    ports:
+      - "3002:3000"
+    environment:
+      # 覆盖容器内的数据库路径，指向挂载卷
+      - DATABASE_URL=file:/app/data/snippets.db
+    volumes:
+      # 将宿主机的 ./data 目录挂载到容器内的 /app/data
+      # 确保数据持久化，删除容器数据不丢失
+      - ./data:/app/data

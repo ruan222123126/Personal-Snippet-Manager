@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { TagInput } from '@/components/ui/TagInput';
@@ -30,6 +30,7 @@ const LANGUAGES = [
 
 export default function CreateSnippetPage() {
   const router = useRouter();
+  const codeTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const [formData, setFormData] = useState({
     title: '',
     code: '',
@@ -70,14 +71,17 @@ export default function CreateSnippetPage() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Tab') {
       e.preventDefault();
-      const start = e.currentTarget.selectionStart;
-      const end = e.currentTarget.selectionEnd;
+      const target = e.currentTarget;
+      const start = target.selectionStart;
+      const end = target.selectionEnd;
       const newValue =
         formData.code.substring(0, start) + '  ' + formData.code.substring(end);
       setFormData({ ...formData, code: newValue });
-      // Set cursor position after the inserted tabs
+      // Set cursor position after the inserted tabs using ref to avoid null reference
       setTimeout(() => {
-        e.currentTarget.selectionStart = e.currentTarget.selectionEnd = start + 2;
+        if (codeTextAreaRef.current) {
+          codeTextAreaRef.current.selectionStart = codeTextAreaRef.current.selectionEnd = start + 2;
+        }
       }, 0);
     }
   };
@@ -174,6 +178,7 @@ export default function CreateSnippetPage() {
               代码 <span className="text-red-500">*</span>
             </label>
             <textarea
+              ref={codeTextAreaRef}
               id="code"
               required
               rows={12}

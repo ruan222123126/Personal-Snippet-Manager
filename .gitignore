@@ -37,4 +37,12 @@ next-env.d.ts
 /prisma/*.db-journal
 /prisma/migrations/*/migration.sql
 
+# docker data volume
+/data/
+
 /lib/generated/prisma
+
+# claude duo system
+/.claude-duo/queue/
+/.claude-duo/logs/
+/.claude-duo/.processed

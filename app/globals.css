@@ -1,28 +1,26 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* 自定义样式层 */
-@layer base {
-  /* 选中文本的颜色 */
-  ::selection {
-    background-color: rgb(59 130 246 / 0.3);
-    color: #1e3a8a;
-  }
+/* --- 自定义样式 (原生 CSS) --- */
+
+/* 1. 选中文本颜色 */
+::selection {
+  background-color: rgba(59, 130, 246, 0.3);
+  /* blue-500/30 */
+  color: #1e3a8a;
+  /* blue-900 */
 }
 
-@layer utilities {
-  /* 隐藏滚动条但保留滚动功能 (可选) */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+/* 2. 隐藏滚动条工具类 */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
-/* Webkit 浏览器滚动条美化 */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 3. 全局滚动条美化 */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -34,25 +32,25 @@
 
 ::-webkit-scrollbar-thumb {
   background-color: #d1d5db;
+  /* gray-300 */
   border-radius: 9999px;
   transition: background-color 0.2s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: #9ca3af;
+  /* gray-400 */
 }
 
-::-webkit-scrollbar-corner {
-  background-color: transparent;
-}
-
-/* 深色模式滚动条 */
+/* 4. 深色模式滚动条 */
 @media (prefers-color-scheme: dark) {
   ::-webkit-scrollbar-thumb {
     background-color: #374151;
+    /* gray-700 */
   }
 
   ::-webkit-scrollbar-thumb:hover {
     background-color: #4b5563;
+    /* gray-600 */
   }
 }

@@ -69,17 +69,84 @@ Personal Snippet Manager - 一个代码片段管理应用，使用 Next.js 15、
 [使用中文描述问题和解决方法]
 ```
 
-### 6. 任务管理工作流程
+### 6. 双 Claude 协作工作流程
 
-**任务文件夹结构**:
+**重要**：作为编码 Claude，在执行任务时必须使用双 Claude 协作系统以确保代码质量。
+
+#### 标准任务流程
+
+**任务开始时**：
+```bash
+# 1. 首次使用需要安装依赖（只需运行一次）
+npm run duo:install
+
+# 2. 启动监视系统
+npm run duo
+```
+
+这会自动打开两个终端：
+- **验证 Claude 终端** - 实时审查代码变更
+- **文件监控终端** - 监控文件变化并加入队列
+
+**任务执行中**：
+- 在当前终端（编码 Claude）正常工作
+- 编辑文件时，监控终端会自动检测变化
+- 验证 Claude 会显示变更内容并等待审查
+- 根据验证 Claude 的反馈调整代码
+
+**任务结束时**：
+```bash
+# 清理审查队列
+npm run duo:clean
+
+# 在监控终端和验证终端按 Ctrl+C 停止监视
+```
+
+#### 任务完成检查清单
+
+使用双 Claude 系统的任务需要额外检查：
+- [ ] 任务开始时已启动监视系统 (`npm run duo`)
+- [ ] 任务需求完全实现
+- [ ] 代码遵循项目模式（单例、路径别名）
+- [ ] TypeScript 类型检查通过 (`npx tsc --noEmit`)
+- [ ] 验证 Claude 的反馈已处理
+- [ ] 任务文件已移到 `finish_task/`
+- [ ] 完成报告已写在 `report/`
+- [ ] 已发送桌面通知
+- [ ] 监视系统已关闭（队列已清理）
+
+#### 何时使用双 Claude 系统
+
+**必须使用**：
+- 实现新功能
+- 代码重构
+- 修复复杂 Bug
+- 修改核心逻辑
+- API 变更
+
+**可选使用**：
+- 简单的样式调整
+- 文档更新
+- 配置修改
+- 小型 bug 修复
+
+详见 `.claude-duo/README.md`。
+
+---
+
+### 7. 任务管理工作流程
+
+#### 任务文件夹结构
 ```
 /media/ruan/Files1/Personal Snippet Manager/
-├── task/              # 待处理任务 - 从这里读取任务文件
+├── task/              # 待处理任务 - 从这里读取任务文件  
 ├── finish_task/       # 已完成任务 - 完成后将任务文件移到这里
 └── report/            # 完成报告 - 完成任务后在这里写报告
 ```
 
-**处理任务时**:
+
+
+#### 处理任务时
 1. 从 `/media/ruan/Files1/Personal Snippet Manager/task/` 读取任务文件
 2. 按照上述开发规则完成任务
 3. 将任务文件移到 `/media/ruan/Files1/Personal Snippet Manager/finish_task/`
@@ -92,8 +159,9 @@ Personal Snippet Manager - 一个代码片段管理应用，使用 Next.js 15、
 - [ ] 任务文件已移到 `finish_task/`
 - [ ] 完成报告已写在 `report/`
 - [ ] 已发送桌面通知（见下文）
+- [ ] 如使用了双 Claude 系统，监视系统已关闭
 
-### 任务完成通知
+### 8. 任务完成通知
 
 完成任何任务时，使用以下命令发送桌面通知：
 
@@ -136,10 +204,18 @@ Personal Snippet Manager - 一个代码片段管理应用，使用 Next.js 15、
 
 ### 开发
 ```bash
-npm run dev          # 启动 Next.js 开发服务器（端口 3001）
+npm run dev          # 启动 Next.js 开发服务器（端口 3002）
 npm run build        # 构建生产版本
-npm run start        # 启动生产服务器（端口 3001）
+npm run start        # 启动生产服务器（端口 3002）
 npm run lint         # 运行 ESLint
+```
+
+### CLI 工具
+```bash
+node cli/index.js search [query]    # 搜索代码片段（可交互选择并复制到剪贴板）
+node cli/index.js add               # 添加新代码片段（交互式）
+node cli/index.js list              # 列出所有代码片段
+node cli/index.js test              # 测试 CLI 功能
 ```
 
 ### 数据库
@@ -154,6 +230,17 @@ npx prisma generate            # 重新生成 Prisma Client
 ```bash
 npx tsc --noEmit    # 类型检查而不生成文件
 ```
+
+### 双 Claude 协作系统
+```bash
+npm run duo           # 启动监视系统（编码 Claude 自主调用）
+npm run duo:install   # 安装系统依赖（inotify-tools, jq）
+npm run duo:clean     # 清理审查队列
+npm run duo:watch     # 单独启动文件监控
+npm run duo:review    # 单独启动验证模式
+```
+
+**双 Claude 系统**允许编码 Claude 自主启动监视和验证伙伴，实现实时代码审查。当编码 Claude 开始重要任务时，可以运行 `npm run duo` 来启动审查伙伴。详见 `.claude-duo/README.md`。
 
 ## 架构
 
@@ -224,8 +311,15 @@ app/
 lib/
 ├── prisma.ts      # Prisma Client 单例
 └── shiki.ts       # Shiki Highlighter 单例
+└── data.ts        # 数据访问层
 
 components/ui/     # UI 组件
+
+cli/               # CLI 命令行工具
+├── index.js       # CLI 入口
+├── api.js         # API 调用封装
+├── test.js        # 测试脚本
+└── utils/         # 工具函数（剪贴板等）
 
 prisma/
 ├── schema.prisma  # 数据库 schema
@@ -235,12 +329,16 @@ prisma/
 
 ## 核心技术
 
-- **Next.js 16** - App Router（React Server Components），开发服务器运行在端口 3001
+- **Next.js 16** - App Router（React Server Components），开发服务器运行在端口 3002
 - **React 19** - UI 库
 - **Prisma 6** - SQLite ORM
 - **Shiki** - 语法高亮（使用 TextMate grammars）
 - **Tailwind CSS 4** - 实用优先的 CSS 框架
 - **Heroicons** - 图标库
+- **Commander** - CLI 命令框架
+- **Inquirer** - CLI 交互式提示
+- **Chalk** - CLI 终端颜色输出
+- **Clipboardy** - 跨平台剪贴板操作
 
 ## 数据库连接
 
@@ -262,6 +360,11 @@ Prisma 使用 SQLite，连接 URL 来自 `DATABASE_URL` 环境变量（在 `.env
 | `prisma/schema.prisma` | 数据库 schema 定义 |
 | `app/api/` | Next.js API 路由 |
 | `components/ui/` | 可复用的 UI 组件 |
+| `cli/` | CLI 工具 - 命令行界面（search、add、list 命令） |
+| `.claude-duo/` | 双 Claude 协作系统 - 监视和验证工具 |
+| `.claude-duo/start-monitoring.sh` | 启动监视系统（编码 Claude 调用） |
+| `.claude-duo/README.md` | 双 Claude 系统使用文档 |
 | `task/` | 从这里读取待处理任务 |
+| `task/task_line.md` | 代码质量问题任务清单 |
 | `finish_task/` | 将已完成任务文件移到这里 |
 | `report/` | 在这里写完成报告 |
