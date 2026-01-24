@@ -1,12 +1,18 @@
 import { NextResponse } from 'next/server';
-import { getSnippets } from '@/lib/data';
+import { getSnippets, type SnippetFilters } from '@/lib/data';
 import { prisma } from '@/lib/prisma';
+import { addSearchHistory } from '@/lib/search-history';
 
 /**
  * GET /api/snippets
  * Query parameters:
  *   - q: Search query for full-text search (FTS5)
- *   - tag: Filter by tag name
+ *   - tag: Filter by tag name (backward compatibility)
+ *   - languages: Comma-separated list of languages to filter
+ *   - tags: Comma-separated list of tags to filter
+ *   - dateRange: Time range filter (today/week/month/quarter/all)
+ *   - sortBy: Sort field (createdAt/updatedAt)
+ *   - sortOrder: Sort direction (asc/desc)
  *
  * Returns snippets with associated tags
  */
@@ -15,8 +21,31 @@ export async function GET(request: Request) {
   const q = searchParams.get('q') || undefined;
   const tag = searchParams.get('tag') || undefined;
 
+  // 解析筛选参数
+  const languagesParam = searchParams.get('languages');
+  const tagsParam = searchParams.get('tags');
+  const dateRange = searchParams.get('dateRange') as SnippetFilters['dateRange'] || undefined;
+  const sortBy = searchParams.get('sortBy') as SnippetFilters['sortBy'] || undefined;
+  const sortOrder = searchParams.get('sortOrder') as SnippetFilters['sortOrder'] || undefined;
+
+  const filters: SnippetFilters = {
+    languages: languagesParam ? languagesParam.split(',').map(s => s.trim()) : undefined,
+    tags: tagsParam ? tagsParam.split(',').map(s => s.trim()) : undefined,
+    dateRange,
+    sortBy,
+    sortOrder,
+  };
+
   try {
-    const snippets = await getSnippets(q, tag);
+    const snippets = await getSnippets(q, tag, filters);
+
+    // 如果有搜索查询，记录搜索历史（异步执行，不阻塞响应）
+    if (q) {
+      addSearchHistory(q, filters, snippets.length).catch(err => {
+        console.error('Error saving search history:', err);
+      });
+    }
+
     return NextResponse.json(snippets);
   } catch (error) {
     console.error('Error fetching snippets:', error);

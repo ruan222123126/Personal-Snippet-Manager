@@ -42,3 +42,23 @@ model TagOnSnippet {
 
   @@unique([snippetId, tagId])
 }
+
+model SearchHistory {
+  id          String   @id @default(cuid())
+  query       String
+  filters     String?
+  resultCount Int
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([query])
+}
+
+model SearchStats {
+  id            String   @id @default(cuid())
+  query         String   @unique
+  searchCount   Int      @default(0)
+  lastSearchedAt DateTime @default(now())
+
+  @@index([searchCount])
+}

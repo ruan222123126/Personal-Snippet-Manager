@@ -54,3 +54,19 @@
     /* gray-600 */
   }
 }
+
+/* 5. 搜索结果高亮样式 */
+mark {
+  background-color: #fde047;
+  /* yellow-300 */
+  border-radius: 2px;
+  padding: 0 2px;
+  color: inherit;
+}
+
+.dark mark {
+  background-color: #854d0e;
+  /* yellow-800 */
+  color: #fef9c3;
+  /* yellow-100 */
+}
