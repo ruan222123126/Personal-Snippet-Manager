@@ -1,0 +1,7 @@
+/mnt/Files/Personal-Snippet-Manager/.devenv/flake.json
+/mnt/Files/Personal-Snippet-Manager/.devenv.flake.nix
+/mnt/Files/Personal-Snippet-Manager/.env
+/mnt/Files/Personal-Snippet-Manager/devenv.local.nix
+/mnt/Files/Personal-Snippet-Manager/devenv.lock
+/mnt/Files/Personal-Snippet-Manager/devenv.nix
+/mnt/Files/Personal-Snippet-Manager/devenv.yaml
