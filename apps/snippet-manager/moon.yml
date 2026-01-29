@@ -1,0 +1,24 @@
+# apps/snippet-manager/moon.yml
+type: 'application'
+language: 'javascript'
+platform: 'node'
+
+tasks:
+  dev:
+    command: 'next dev'
+    local: true
+  
+  build:
+    command: 'next build'
+    inputs:
+      - 'app/**/*'
+      - 'components/**/*'
+      - 'prisma/**/*'
+      - 'public/**/*'
+      - 'next.config.mjs'
+    outputs:
+      - '.next'
+
+  'db:push':
+    command: 'prisma db push'
+
