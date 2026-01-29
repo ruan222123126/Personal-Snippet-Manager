@@ -42,7 +42,7 @@ export function SnippetCard({ snippet, query }: SnippetCardProps) {
     ? highlightKeywords(snippet.description, keywords)
     : snippet.description;
   return (
-    <div className="break-inside-avoid bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-blue-500/30 transition-all duration-300 ease-in-out overflow-hidden flex flex-col group relative">
+    <div className="break-inside-avoid bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-blue-500/30 transition-all duration-300 ease-in-out overflow-hidden flex flex-col group relative h-fit">
       {/* Link overlay - 点击整个卡片跳转 */}
       <Link
         href={`/snippets/${snippet.id}`}
@@ -59,6 +59,29 @@ export function SnippetCard({ snippet, query }: SnippetCardProps) {
             dangerouslySetInnerHTML={{ __html: highlightedTitle }}
           />
           <div className="flex items-center gap-2 shrink-0">
+            {/* 教学说明按钮 - 只在有教学说明时显示 */}
+            {snippet.tutorial && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowTutorial(true);
+                }}
+                className="p-1.5 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors"
+                title="查看教学说明"
+                aria-label="查看教学说明"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  />
+                </svg>
+              </button>
+            )}
             <span className="px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-md">
               {snippet.language}
             </span>
@@ -78,7 +101,7 @@ export function SnippetCard({ snippet, query }: SnippetCardProps) {
 
       {/* Code Block */}
       <div className="p-4 flex-1 relative z-10 pointer-events-none">
-        <CodeBlock code={snippet.code} language={snippet.language} />
+        <CodeBlock code={snippet.code} language={snippet.language} maxLines={8} />
       </div>
 
       {/* Tags */}
@@ -92,31 +115,6 @@ export function SnippetCard({ snippet, query }: SnippetCardProps) {
               {tag.name}
             </span>
           ))}
-        </div>
-      )}
-
-      {/* Tutorial Button */}
-      {snippet.tutorial && (
-        <div className="px-4 pb-4 relative z-10">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setShowTutorial(true);
-            }}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-              />
-            </svg>
-            教学说明
-          </button>
         </div>
       )}
 

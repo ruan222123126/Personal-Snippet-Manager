@@ -289,14 +289,14 @@ npm run duo:review    # 单独启动验证模式
 项目使用 SQLite 配合 Prisma ORM。关键架构决策：
 
 **Prisma Schema** (`prisma/schema.prisma`):
-- `Snippet` - 代码片段，包含标题、描述、代码、语言
+- `Snippet` - 代码片段，包含标题、描述、代码、语言、教学说明（tutorial）
 - `Tag` - 标签，可选颜色
 - `TagOnSnippet` - 显式连接表（非隐式多对多），带有 `assignedAt` 时间戳
 - `SearchHistory` - 搜索历史记录，用于保存用户搜索和筛选器状态
 - `SearchStats` - 搜索统计，记录每个查询的搜索次数和最后搜索时间
 
 **SQLite FTS5 全文搜索**:
-- 虚拟表 `SnippetFTS` 索引 title、description、code、language
+- 虚拟表 `SnippetFTS` 索引 title、description、code、language、tutorial
 - 分词器：`porter unicode61`（支持中文和英文）
 - 三个触发器自动在 Snippet 表和 SnippetFTS 之间同步：
   - `snippet_ai` - INSERT 同步
@@ -352,6 +352,7 @@ import { getShikiHighlighter } from '@/lib/shiki';
 - 代码高亮使用 `highlightCode()` 函数，支持明暗主题切换
 - Shiki 预加载语言：javascript、typescript、python、java、cpp、c、go、rust、html、css、json、bash、sql、markdown、text
 - 添加新语言支持需要修改 `lib/shiki.ts:14` 中的 `langs` 数组
+- **首页代码卡片对齐**：`CodeBlock` 组件支持 `maxLines` 属性限制显示行数，在 `SnippetCard` 中设置为 `maxLines={8}` 确保代码块固定高度为 12rem
 
 ## 项目结构
 
@@ -384,11 +385,17 @@ lib/
 ├── search-history.ts        # 搜索历史管理
 └── search-suggestions.ts    # 搜索建议功能
 
-components/ui/               # UI 组件
-├── CodeBlock.tsx            # 代码块组件（带语法高亮）
-├── CopyButton.tsx           # 复制按钮
-├── SearchBar.tsx            # 搜索栏组件
-└── TagInput.tsx             # 标签输入组件
+components/                  # React 组件
+├── ui/                      # UI 基础组件
+│   ├── CodeBlock.tsx        # 代码块组件（支持 maxLines 限制行数）
+│   ├── CopyButton.tsx       # 复制按钮
+│   ├── SearchBar.tsx        # 搜索栏组件
+│   ├── TagInput.tsx         # 标签输入组件
+│   └── TutorialView.tsx     # 教学说明查看器
+├── SnippetCard.tsx          # 代码片段卡片（首页使用）
+├── SnippetActions.tsx       # 卡片操作按钮
+├── AdvancedSearchPanel.tsx  # 高级搜索面板
+└── FilterChips.tsx          # 筛选条件标签
 
 cli/                         # CLI 命令行工具
 ├── index.js                 # CLI 入口
@@ -450,7 +457,8 @@ Prisma 使用 SQLite，连接 URL 来自 `DATABASE_URL` 环境变量（在 `.env
 | `prisma/schema.prisma` | 数据库 schema 定义 |
 | `app/api/snippets/route.ts` | 代码片段列表 API（搜索、创建） |
 | `app/api/snippets/[id]/route.ts` | 单个代码片段 API（读取、更新、删除） |
-| `components/ui/` | 可复用的 UI 组件 |
+| `components/ui/CodeBlock.tsx` | 代码块组件 - 支持 maxLines 属性限制显示行数 |
+| `components/SnippetCard.tsx` | 首页代码片段卡片，使用 CodeBlock(maxLines=8) |
 | `cli/` | CLI 工具 - 命令行界面（search、add、list 命令） |
 | `.claude-duo/` | 双 Claude 协作系统 - 监视和验证工具 |
 | `.claude-duo/start-monitoring.sh` | 启动监视系统（编码 Claude 调用） |
@@ -476,7 +484,18 @@ const html = await highlightCode(code, language);
 
 // 搜索结果高亮
 import { highlightKeywords, extractKeywords } from '@/lib/highlight';
+
+// CodeBlock 组件（带行数限制）
+<CodeBlock code={snippet.code} language={snippet.language} maxLines={8} />
 ```
+
+### UI 组件使用模式
+
+**首页代码卡片布局**：
+- 使用 CSS columns 瀑布流布局：`columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6`
+- `SnippetCard` 使用 `break-inside-avoid` 防止跨列分割
+- `CodeBlock` 设置 `maxLines={8}` 确保代码块固定高度为 12rem（8行 × 1.5rem）
+- 卡片使用 `h-fit` 让高度由内容决定，避免被 flex-1 拉伸
 
 ### 数据库查询模式
 

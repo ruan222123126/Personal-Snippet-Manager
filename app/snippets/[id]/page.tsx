@@ -2,13 +2,10 @@ import { prisma } from '@/lib/prisma';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeftIcon, PencilIcon, BookOpenIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, PencilIcon } from '@heroicons/react/24/outline';
 import type { Metadata } from 'next';
 import { DeleteButton } from './DeleteButton';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-// @ts-ignore - rehype-raw may not have full type definitions
-import rehypeRaw from 'rehype-raw';
+import { TutorialButton } from './TutorialButton';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -20,10 +17,9 @@ interface PageProps {
  * 显示单个代码片段的完整信息，包括：
  * - 标题、描述、语言
  * - 完整代码（带语法高亮）
- * - 教学说明（如果存在）
  * - 标签列表
  * - 创建和更新时间
- * - 操作按钮（返回、编辑、删除）
+ * - 操作按钮（返回、编辑、删除、教学说明）
  */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
@@ -80,6 +76,11 @@ export default async function SnippetDetailPage({ params }: PageProps) {
           </Link>
 
           <div className="flex items-center gap-2">
+            {/* 教学说明按钮 */}
+            {snippet.tutorial && (
+              <TutorialButton tutorial={snippet.tutorial} language={snippet.language} />
+            )}
+
             {/* 编辑按钮 */}
             <Link
               href={`/snippets/${id}/edit`}
@@ -130,54 +131,6 @@ export default async function SnippetDetailPage({ params }: PageProps) {
           <div className="p-6">
             <CodeBlock code={snippet.code} language={snippet.language} />
           </div>
-
-          {/* 教学说明 */}
-          {snippet.tutorial && (
-            <div className="px-6 pb-6 border-t border-gray-200 dark:border-gray-700">
-              <div className="flex items-center gap-2 mb-4 mt-6">
-                <BookOpenIcon className="w-5 h-5 text-purple-500" />
-                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">教学说明</h2>
-              </div>
-              <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-blue-500 prose-a:no-underline hover:prose-a:underline">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  rehypePlugins={[rehypeRaw]}
-                  components={{
-                    h1({ children }) {
-                      return <h1 className="text-2xl font-bold mb-4">{children}</h1>;
-                    },
-                    h2({ children }) {
-                      return <h2 className="text-xl font-bold mb-3 mt-6">{children}</h2>;
-                    },
-                    h3({ children }) {
-                      return <h3 className="text-lg font-bold mb-2 mt-4">{children}</h3>;
-                    },
-                    ul({ children }) {
-                      return <ul className="list-disc list-inside space-y-1 my-3">{children}</ul>;
-                    },
-                    ol({ children }) {
-                      return <ol className="list-decimal list-inside space-y-1 my-3">{children}</ol>;
-                    },
-                    li({ children }) {
-                      return <li className="text-gray-700 dark:text-gray-300">{children}</li>;
-                    },
-                    p({ children }) {
-                      return <p className="my-3 leading-7">{children}</p>;
-                    },
-                    blockquote({ children }) {
-                      return (
-                        <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4 text-gray-600 dark:text-gray-400">
-                          {children}
-                        </blockquote>
-                      );
-                    },
-                  }}
-                >
-                  {snippet.tutorial}
-                </ReactMarkdown>
-              </div>
-            </div>
-          )}
 
           {/* 标签 */}
           {snippet.tags.length > 0 && (
