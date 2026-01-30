@@ -11,7 +11,7 @@ platform: "system"
 tasks:
   dev:
     # 加上 npx 前缀最保险
-    command: "npx next dev"
+    command: "npx next dev -p 3002"
     local: true
 
   build:

@@ -1,0 +1,21 @@
+{
+  "node": {
+    "40aef84341dc912738bc45320a938657f30ba87467": {
+      "workers": {
+        "app/page": {
+          "moduleId": "[project]/apps/snippet-manager/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/apps/snippet-manager/app/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteSnippet",
+          "filename": "apps/snippet-manager/app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      },
+      "filename": "apps/snippet-manager/app/actions.ts",
+      "exportedName": "deleteSnippet"
+    }
+  },
+  "edge": {},
+  "encryptionKey": "HW7YTLbanHB/1rnHc/6CvmZS8t+64n/wYyR+x69+VKo="
+}
