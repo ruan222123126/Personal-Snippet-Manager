@@ -1,40 +1,44 @@
 # apps/snippet-manager/moon.yml
 
-type: 'application'
-language: 'javascript'
+type: "application"
 
+# ✅ 关键修改 1：设为 unknown，彻底绕过版本检查
+language: "unknown"
 
-platform: 'system'
+# ✅ 关键修改 2：保持 system 模式
+platform: "system"
 
 tasks:
   dev:
-    # 为了保险，建议加上 npx 前缀，或者确保 node_modules/.bin 在 PATH 里
-    command: 'npx next dev'
+    # 加上 npx 前缀最保险
+    command: "npx next dev"
     local: true
 
   build:
-    command: 'npx next build'
+    command: "npx next build"
     inputs:
-      - 'app/**/*'
-      - 'components/**/*'
-      - 'prisma/**/*'
-      - 'public/**/*'
-      - 'next.config.mjs'
-      - 'postcss.config.cjs'
-      - 'tailwind.config.ts'
-      - 'tsconfig.json'
+      - "app/**/*"
+      - "components/**/*"
+      - "prisma/**/*"
+      - "public/**/*"
+      - "next.config.mjs"
+      - "postcss.config.cjs"
+      - "tailwind.config.ts"
+      - "tsconfig.json"
+      # ✅ 关键修改 3：必须手动加上这个，否则装新包不会触发重构建
+      - "package.json"
     outputs:
-      - '.next'
+      - ".next"
 
-  'db-push':
-    command: 'npx prisma db push'
+  "db-push":
+    command: "npx prisma db push"
 
-  'db-studio':
-    command: 'npx prisma studio'
+  "db-studio":
+    command: "npx prisma studio"
     local: true
 
-  'script-seed':
-    command: 'node scripts/create-sample-data.js'
+  "script-seed":
+    command: "node scripts/create-sample-data.js"
 
-  'script-list':
-    command: 'node scripts/list-snippets.js'
+  "script-list":
+    command: "node scripts/list-snippets.js"
