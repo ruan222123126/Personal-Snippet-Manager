@@ -4,12 +4,12 @@
       vars = {
   version = "1.11.2";
   system = "x86_64-linux";
-  devenv_root = "/mnt/Files/Personal-Snippet-Manager";
-  project_input_ref = "path:/mnt/Files/Personal-Snippet-Manager";
-  devenv_dotfile = "/mnt/Files/Personal-Snippet-Manager/.devenv";
+  devenv_root = "/mnt/Files/Ts-space";
+  project_input_ref = "path:/mnt/Files/Ts-space";
+  devenv_dotfile = "/mnt/Files/Ts-space/.devenv";
   devenv_dotfile_path = ./.devenv;
   devenv_tmpdir = "/run/user/1000";
-  devenv_runtime = "/run/user/1000/devenv-430c76c";
+  devenv_runtime = "/run/user/1000/devenv-ebb3e41";
   devenv_istesting = false;
   devenv_direnvrc_latest_version = 1;
   container_name = null;
@@ -17,7 +17,7 @@
   ];
   hostname = "ruan";
   username = "ruan";
-  git_root = "/mnt/Files/Personal-Snippet-Manager";
+  git_root = "/mnt/Files/Ts-space";
   secretspec = null;
 };
     in
@@ -41,12 +41,12 @@
       vars = {
   version = "1.11.2";
   system = "x86_64-linux";
-  devenv_root = "/mnt/Files/Personal-Snippet-Manager";
-  project_input_ref = "path:/mnt/Files/Personal-Snippet-Manager";
-  devenv_dotfile = "/mnt/Files/Personal-Snippet-Manager/.devenv";
+  devenv_root = "/mnt/Files/Ts-space";
+  project_input_ref = "path:/mnt/Files/Ts-space";
+  devenv_dotfile = "/mnt/Files/Ts-space/.devenv";
   devenv_dotfile_path = ./.devenv;
   devenv_tmpdir = "/run/user/1000";
-  devenv_runtime = "/run/user/1000/devenv-430c76c";
+  devenv_runtime = "/run/user/1000/devenv-ebb3e41";
   devenv_istesting = false;
   devenv_direnvrc_latest_version = 1;
   container_name = null;
@@ -54,7 +54,7 @@
   ];
   hostname = "ruan";
   username = "ruan";
-  git_root = "/mnt/Files/Personal-Snippet-Manager";
+  git_root = "/mnt/Files/Ts-space";
   secretspec = null;
 };
       devenv =

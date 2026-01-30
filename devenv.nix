@@ -20,6 +20,9 @@
   packages = [
     pkgs.openssl
     pkgs.python311Packages.pip # 如果你需要手动跑 pip
+    pkgs.openssl
+    pkgs.moon    # 修正：包名是 moon
+    pkgs.proto
   ];
 
   # 3. 环境变量注入 (解决 Prisma 在 Linux 下找不到库的问题)

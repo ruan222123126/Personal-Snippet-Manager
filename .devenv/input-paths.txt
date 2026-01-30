@@ -1,7 +1,7 @@
-/mnt/Files/Personal-Snippet-Manager/.devenv/flake.json
-/mnt/Files/Personal-Snippet-Manager/.devenv.flake.nix
-/mnt/Files/Personal-Snippet-Manager/.env
-/mnt/Files/Personal-Snippet-Manager/devenv.local.nix
-/mnt/Files/Personal-Snippet-Manager/devenv.lock
-/mnt/Files/Personal-Snippet-Manager/devenv.nix
-/mnt/Files/Personal-Snippet-Manager/devenv.yaml
+/mnt/Files/Ts-space/.devenv/flake.json
+/mnt/Files/Ts-space/.devenv.flake.nix
+/mnt/Files/Ts-space/.env
+/mnt/Files/Ts-space/devenv.local.nix
+/mnt/Files/Ts-space/devenv.lock
+/mnt/Files/Ts-space/devenv.nix
+/mnt/Files/Ts-space/devenv.yaml

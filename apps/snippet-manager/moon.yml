@@ -19,6 +19,16 @@ tasks:
     outputs:
       - '.next'
 
-  'db:push':
+  # 将冒号改为连字符
+  'db-push':
     command: 'prisma db push'
+  
+  'db-studio':
+    command: 'prisma studio'
+    local: true
 
+  'script-seed':
+    command: 'node scripts/create-sample-data.js'
+    
+  'script-list':
+    command: 'node scripts/list-snippets.js'

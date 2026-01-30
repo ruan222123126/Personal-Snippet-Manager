@@ -7,8 +7,5 @@
   ],
   "scripts": {
     "clean": "rm -rf node_modules **/*/node_modules"
-  },
-  "devDependencies": {
-    "@moonrepo/cli": "^1.41.7"
   }
 }
