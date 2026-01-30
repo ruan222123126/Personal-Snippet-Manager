@@ -1,15 +1,14 @@
 # .moon/toolchain.yml
 
-# 1. Node.js 配置
-node:
-  version: 'system'      # 核心：信任 Nix 环境提供的 Node
-  packageManager: 'npm'  # 你的项目目前使用 npm
-  addEnginesConstraint: false # 关闭引擎版本强校验，避免冲突
-  syncProjectWorkspaceDependencies: true
+# ❌ 注释掉整个 Node 配置，彻底禁止 Moon 干预 Node 版本
+# node:
+#   version: 'system'
+#   packageManager: 'npm'
+#   addEnginesConstraint: false
+#   syncProjectWorkspaceDependencies: true
 
-# 2. (可选) TypeScript 配置 - 让 Moon 帮你管理 TS 版本 (或者也设为 system)
+# TypeScript 配置可以保留，或者也注释掉（如果你不需要 Moon 帮你同步 tsconfig）
 typescript:
   createMissingConfig: true
   routeOutDirToCache: true
   syncProjectReferences: true
-
