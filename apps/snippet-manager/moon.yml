@@ -1,34 +1,40 @@
 # apps/snippet-manager/moon.yml
+
 type: 'application'
 language: 'javascript'
-platform: 'node'
+
+
+platform: 'system'
 
 tasks:
   dev:
-    command: 'next dev'
+    # 为了保险，建议加上 npx 前缀，或者确保 node_modules/.bin 在 PATH 里
+    command: 'npx next dev'
     local: true
-  
+
   build:
-    command: 'next build'
+    command: 'npx next build'
     inputs:
       - 'app/**/*'
       - 'components/**/*'
       - 'prisma/**/*'
       - 'public/**/*'
       - 'next.config.mjs'
+      - 'postcss.config.cjs'
+      - 'tailwind.config.ts'
+      - 'tsconfig.json'
     outputs:
       - '.next'
 
-  # 将冒号改为连字符
   'db-push':
-    command: 'prisma db push'
-  
+    command: 'npx prisma db push'
+
   'db-studio':
-    command: 'prisma studio'
+    command: 'npx prisma studio'
     local: true
 
   'script-seed':
     command: 'node scripts/create-sample-data.js'
-    
+
   'script-list':
     command: 'node scripts/list-snippets.js'
